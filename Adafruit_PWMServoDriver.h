@@ -55,6 +55,7 @@ class Adafruit_PWMServoDriver {
   void wakeup();
   void setExtClk(uint8_t prescale);
   void setPWMFreq(float freq);
+  void setPWMPrescale(uint8_t prescale);
   void setOutputMode(bool totempole);
   uint8_t getPWM(uint8_t num);
   void setPWM(uint8_t num, uint16_t on, uint16_t off);

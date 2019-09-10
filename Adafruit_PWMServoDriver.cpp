@@ -159,6 +159,29 @@ void Adafruit_PWMServoDriver::setPWMFreq(float freq) {
 }
 
 /*!
+ *  @brief  Sets the prescale for the chip - use instead of setPWMFreq to avoid the floating
+ *          point maths (which saves considerably on sketch size)
+ *  @param  prescale Prescale value to set
+ */
+void Adafruit_PWMServoDriver::setPWMPrescale(uint8_t prescale)
+{
+  uint8_t oldmode = read8(PCA9685_MODE1);
+  uint8_t newmode = (oldmode & 0x7F) | 0x10; // sleep
+  write8(PCA9685_MODE1, newmode);            // go to sleep
+  write8(PCA9685_PRESCALE, prescale);        // set the prescaler
+  write8(PCA9685_MODE1, oldmode);
+  delay(5);
+  write8(PCA9685_MODE1,
+         oldmode |
+             0xa0); //  This sets the MODE1 register to turn on auto increment.
+
+#ifdef ENABLE_DEBUG_OUTPUT
+  Serial.print("Mode now 0x");
+  Serial.println(read8(PCA9685_MODE1), HEX);
+#endif
+}
+
+/*!
  *  @brief  Sets the output mode of the PCA9685 to either 
  *  open drain or push pull / totempole. 
  *  Warning: LEDs with integrated zener diodes should
